@@ -40,3 +40,5 @@ langchain-text-splitters
 # the below library should NOT be imported into any python files
 # it is for CLI usage ONLY
 yamllint>=1.35.1,<1.36.0
+# library for improve the UX
+textual>=0.63.6
