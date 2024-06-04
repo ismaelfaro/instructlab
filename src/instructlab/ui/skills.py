@@ -102,7 +102,7 @@ class SkillsBrowser(App):
 if __name__ == "__main__":
     # TODO: read from config
     location = "../../../../taxonomy/compositional_skills/"
-    KnowledgeBrowser(location).run()
+    SkillsBrowser(location).run()
 
 
     # template = """
