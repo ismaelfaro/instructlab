@@ -13,10 +13,10 @@ from rich.json import JSON
 from rich.traceback import Traceback
 
 from textual.app import App, ComposeResult
-from textual.containers import Container, VerticalScroll, Horizontal
+from textual.containers import Container, VerticalScroll, Horizontal, Vertical
 from textual.reactive import var
-from textual.widgets import DirectoryTree, Footer, Header, Static, Input, Label, TextArea, TabbedContent, TabPane
-
+from textual.widgets import DirectoryTree, Footer, Header, Static, Input, Label, TextArea, TabbedContent, TabPane, Button, Tree
+from textual.widgets.tree import TreeNode
 
 class SkillsBrowser(App):
     """SkillsBrowser"""
@@ -32,8 +32,20 @@ class SkillsBrowser(App):
     # TODO: export to css file
     CSS = '''
         #tree-view {
+            max-width: 100%;
+        }
+
+        #content-zone {
+            max-width: 100%;
+        }
+        #tree-zone {
             max-width: 30%;
         }
+        
+        #add-skills  {
+            max-width: 100%;
+        }
+
     '''
 
     def __init__(self, location: str) -> None:
@@ -49,10 +61,23 @@ class SkillsBrowser(App):
         path = "./" if len(sys.argv) < 2 else sys.argv[1]
         # yield Header()
         with Horizontal():
-            yield DirectoryTree(path, id="tree-view")
-            with Container():
+            with Vertical(id="tree-zone"):
+                yield DirectoryTree(path, id="tree-view")
+                yield Button("add skills",id='add-skills')
+            with Container(id="content-zone"):
                 with TabbedContent(initial=""):
                     with TabPane("content", id="content"):  # main tab
+                        yield Input(placeholder="task_description:", type="text")
+                        yield Input(placeholder="created_by:", type="text")
+                        # TODO: use Collapsible
+                        with Container():
+                            yield Label('question:')
+                            yield TextArea()
+                            yield Label('context:')
+                            yield TextArea()
+                            yield Label('answer:')
+                            yield TextArea()
+                    with TabPane("add example", id="add-example"):  # main tab
                         yield Input(placeholder="task_description:", type="text")
                         yield Input(placeholder="created_by:", type="text")
                         # TODO: use Collapsible
@@ -91,13 +116,12 @@ class SkillsBrowser(App):
             self.sub_title = "ERROR"
         else:
             code_view.update(syntax)
-            self.query_one("#code-view").scroll_home(animate=True)
+            self.query_one("#code-view").scroll_home(animate=False)
             self.sub_title = str(event.path)
 
     def action_toggle_files(self) -> None:
         """Called in response to key binding."""
         self.show_tree = not self.show_tree
-
 
 if __name__ == "__main__":
     # TODO: read from config
